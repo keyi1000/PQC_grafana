@@ -1,0 +1,45 @@
+services:
+  rsa-server:
+    build:
+      context: .
+      dockerfile: Dockerfile.server
+    ports:
+      - "8090:8080"
+    container_name: rsa-public-key-server
+    restart: unless-stopped
+    environment:
+      - TZ=Asia/Tokyo
+    networks:
+      - crypto-network
+
+  ml-kem-server:
+    build:
+      context: .
+      dockerfile: Dockerfile.mlkem
+    ports:
+      - "8091:8081"
+    container_name: ml-kem-public-key-server
+    restart: unless-stopped
+    environment:
+      - TZ=Asia/Tokyo
+    networks:
+      - crypto-network
+
+  aes-client:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    ports:
+      - "8092:8082"
+    container_name: aes-encryption-client
+    depends_on:
+      - rsa-server
+      - ml-kem-server
+    environment:
+      - TZ=Asia/Tokyo
+    networks:
+      - crypto-network
+
+networks:
+  crypto-network:
+    driver: bridge

@@ -1,0 +1,34 @@
+# ビルドステージ
+FROM golang:1.23-alpine AS builder
+
+# 作業ディレクトリを設定
+WORKDIR /app
+
+# go.modとgo.sumをコピー
+COPY ml-kem-server/go.mod ml-kem-server/go.sum ./
+
+# 依存関係をダウンロード
+RUN go mod download
+
+# ソースコードをコピー
+COPY ml-kem-server/ ./
+
+# アプリケーションをビルド
+RUN CGO_ENABLED=0 GOOS=linux go build -o /ml-kem-server main.go
+
+# 実行ステージ
+FROM alpine:latest
+
+# 必要なパッケージをインストール
+RUN apk --no-cache add ca-certificates
+
+WORKDIR /root/
+
+# ビルドステージからバイナリをコピー
+COPY --from=builder /ml-kem-server .
+
+# ポート8081を公開
+EXPOSE 8081
+
+# アプリケーションを実行
+CMD ["./ml-kem-server"]

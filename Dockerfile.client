@@ -1,0 +1,31 @@
+# ビルドステージ
+FROM golang:1.23-alpine AS builder
+
+# 作業ディレクトリを設定
+WORKDIR /app
+
+# go.modとgo.sumをコピー
+COPY aes-client/go.mod aes-client/go.sum ./
+
+# 依存関係をダウンロード
+RUN go mod download
+
+# ソースコードをコピー
+COPY aes-client/ ./
+
+# アプリケーションをビルド
+RUN CGO_ENABLED=0 GOOS=linux go build -o /aes-client main.go
+
+# 実行ステージ
+FROM alpine:latest
+
+# 必要なパッケージをインストール
+RUN apk --no-cache add ca-certificates
+
+WORKDIR /root/
+
+# ビルドステージからバイナリをコピー
+COPY --from=builder /aes-client .
+
+# アプリケーションを実行
+CMD ["./aes-client"]
