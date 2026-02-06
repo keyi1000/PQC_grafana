@@ -25,12 +25,11 @@ PQC_grafana
 上記にリクエストを送ると各データがレスポンンスされる
 
 ## 7. 実行方法
+
 ```
-bash
-git clone 〇〇
-cd 〇〇
-〇〇
+docker compose up 
 ```
+このリポジトリにはないがprometheusとgrafanの環境を用意しデータを読み取る
 
 ## 8. 評価・結果
 実験の結果、rsaとml-kemの違いがわかり十分に勉強できたと感じている。
