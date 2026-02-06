@@ -42,3 +42,4 @@ docker compose up
 
 ## 10. 参考文献
 [https://it-trend.jp/encryption/article/64-0063](https://it-trend.jp/encryption/article/64-0063)
+https://www.nri-secure.co.jp/blog/pqc1
